@@ -48,13 +48,13 @@
 
 (deftest json-encode
   (testing "request"
-    (let ((request (make-request :id 1 :method "add" :params '(3 10))))
+    (let ((request (make-request :jsonrpc "2.0" :id 1 :method "add" :params '(3 10))))
       (ok (outputs (yason:encode request)
               "{\"jsonrpc\":\"2.0\",\"method\":\"add\",\"params\":[3,10],\"id\":1}"))))
   (testing "response"
-    (let ((response (make-response :id 1 :result 13)))
+    (let ((response (make-response :jsonrpc "2.0" :id 1 :result 13)))
       (ok (outputs (yason:encode response)
               "{\"jsonrpc\":\"2.0\",\"result\":13,\"id\":1}")))
-    (let ((response (make-response :id 2 :result nil)))
+    (let ((response (make-response :jsonrpc "2.0" :id 2 :result nil)))
       (ok (outputs (yason:encode response)
               "{\"jsonrpc\":\"2.0\",\"result\":null,\"id\":2}")))))

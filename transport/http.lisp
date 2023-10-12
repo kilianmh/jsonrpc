@@ -4,6 +4,8 @@
         #:jsonrpc/utils)
   (:import-from #:jsonrpc/errors
                 #:jsonrpc-error)
+  (:import-from #:jsonrpc/class
+		#:rpc-version)
   (:import-from #:cl-ppcre)
   (:import-from #:dexador)
   (:import-from #:jsonrpc/connection
@@ -164,10 +166,11 @@ Here is example, how to setup connection when you need to pass authorization hea
 (defmethod jsonrpc:call-to ((from client) (to http-connection) (method string) &optional params &rest options)
   "It is possible to pass HTTP headers for this one call by giving an alist as :headers keyword argument."
   (destructuring-bind (&key
-		       (timeout *default-timeout*)
-		       (basic-auth nil)
-		       (headers nil)) options
-    (let* ((request (make-request :id (make-id)
+			 (timeout *default-timeout*)
+			 (basic-auth nil)
+			 (headers nil)) options
+    (let* ((request (make-request :rpc-version (slot-value from 'jsonrpc/class:rpc-version)
+				  :id (make-id)
                                   :method method
                                   :params params))
            (request-headers (merge-headers
@@ -183,7 +186,7 @@ Here is example, how to setup connection when you need to pass authorization hea
                                    :headers request-headers
                                    :connect-timeout timeout
                                    :read-timeout timeout))
-           (response (parse-message raw-response)))
+           (response (parse-message raw-response :rpc-version (rpc-version from))))
 
       (if (response-error response)
           (error 'jsonrpc-callback-error

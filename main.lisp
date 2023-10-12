@@ -64,8 +64,15 @@
    #:make-client))
 (in-package #:jsonrpc)
 
-(defun make-client ()
-  (make-instance 'client))
+(declaim (ftype (function (&key (:rpc-version number))
+			  (values client &optional))
+		make-client))
+(defun make-client (&key rpc-version)
+  "Creates and returns a new instance of the client class. Optionally the jsonrpc
+   version can be supplied in order to amend request generation and parsing."
+  (if rpc-version
+      (make-instance 'client :rpc-version rpc-version)
+      (make-instance 'client)))
 
 
 (defun make-server ()

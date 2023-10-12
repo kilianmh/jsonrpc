@@ -44,6 +44,7 @@
            #:client
            #:server
            #:jsonrpc-transport
+	   #:rpc-version
            #:expose
            #:register-method
            #:clear-methods
@@ -79,7 +80,13 @@
   (unless (jsonrpc-transport jsonrpc)
     (error "Connection isn't established yet for ~A" jsonrpc)))
 
-(defclass client (jsonrpc) ())
+(defclass client (jsonrpc)
+  ((rpc-version :type number
+		:initarg :rpc-version
+		:initform 2.0
+		:accessor rpc-version
+		:documentation "Json-rpc version of the client. This affects response parsing and generation"))
+  (:documentation "A client is needed for creating requests with call/call-to."))
 
 (defclass server (jsonrpc)
   ((client-connections :initform '()

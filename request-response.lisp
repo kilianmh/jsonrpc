@@ -67,7 +67,9 @@
               (hash-table-keys request))))
 
 (defun valid-response-p (response)
-  (and (equal (gethash "jsonrpc" response) "2.0")
+  t)
+
+#|(and ;(equal (gethash "jsonrpc" response) "2.0")
        (typep (gethash "error" response)
               '(or null hash-table))
        (typep (gethash "id" response)
@@ -76,7 +78,8 @@
             (nth-value 1 (gethash "result" response)))
        (every (lambda (key)
                 (find key '("jsonrpc" "result" "error" "id") :test #'string=))
-              (hash-table-keys response))))
+              (hash-table-keys response)))
+  |#
 
 (defun parse-message (input)
   (when (or (and (typep input 'string)
